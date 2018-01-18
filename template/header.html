@@ -1,17 +1,37 @@
-
+<style>
+.navbar-dark {
+background-color: #f4fff2;
+border-color: #ccd3c3;
+}
+body {
+  margin: 0;
+  font-family: Arial;
+  color: black;
+}
+</style>
         <div class="page-header">
         <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
-          <a class="navbar-brand" href="{% url 'hello_user' project_name %}">{{  project_name }}</a>
+          <a class="navbar-brand" href="{% url 'index' %}">TeamLab</a>
           <ul class="nav navbar-nav">
             <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="{% url 'product' %}">Search</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">About</a>
+              <a class="nav-link" href="{% url 'bookmark' %}">Administrator</a>
             </li>
+
+           {% if email %}
             <li class="nav-item">
-              <a class="nav-link" href="#">Contact</a>
+                 <a class="nav-link" href={% url 'logout' %}>{{ email }}</a>
             </li>
+           {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{%  url 'login' %}">Login</a>
+            </li>
+
+           {% endif %}
+
+
           </ul>
         </nav>
     </div>
