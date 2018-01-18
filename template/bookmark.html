@@ -9,23 +9,23 @@
 
       {% if bookmark_name %}
         <div class="alert alert-success col-sm-offset-1 col-sm-10">
-            <strong>Success!</strong> Bookmark {{ bookmark_name}} is created.
+            <strong>1:1 문의사항이 접수되었습니다.</strong>
         </div>
       {% endif %}
 
-      <form class="form-horizontal" action="{% url 'bookmark' %}" method="post">
+      <form class="form-horizontal" action="{% url 'Inquiry' %}" method="post">
             {% csrf_token %}
         <div class="form-group">
-            <label class="control-label col-sm-2" for="bookmark_name">ID:</label>
+            <label class="control-label col-sm-2" for="bookmark_name">1:1 문의사항:</label>
             <div class="col-sm-10">
-            <input type="text" class="form-control" name="bookmark_name" id="bookmark_name" placeholder="Enter ID">
+            <input type="text" class="form-control" name="bookmark_name" id="bookmark_name" placeholder="">
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="bookmark_url">Password:</label>
+            <label class="control-label col-sm-2" for="bookmark_url">이메일 주소:</label>
             <div class="col-sm-10">
-            <input type="text" class="form-control" name="bookmark_url" id="bookmark_url" placeholder="Enter Password">
+            <input type="text" class="form-control" name="bookmark_url" id="bookmark_url" placeholder="">
             </div>
         </div>
 
@@ -36,29 +36,6 @@
             </div>
         </div>
         </form>
-
-    {% if all_bookmark %}
-    <div class = "col-sm-offset-2 col-sm-10">
-        <table class="table table-condensed">
-            <thead>
-                <tr>
-                    <td>ID</td>
-                    <td>Name</td>
-                    <td>URL</td>
-                </tr>
-            </thead>
-            <tbody>
-            {% for bookmark in all_bookmark %}
-                <tr>
-                    <td>{{ bookmark.bookmark_id}}</td>
-                    <td>{{ bookmark.bookmark_name}}</td>
-                    <td><a href="{{ bookmark.bookmark_url}}">{{ bookmark.bookmark_url}}</a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-     </div>
-      {% endif %}
 
 
     </div>

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from bookmark.models import Bookmark
+from bookmark.models import Question
 import requests
 from bs4 import BeautifulSoup
 from bookmark.models import Product
@@ -16,7 +16,7 @@ def index(request):
 
     return render(request, 'index.html', {"email": email})
 
-def bookmark(request):
+def Inquiry(request):
     try:
         email = request.session['email']
     except KeyError as e:
@@ -24,18 +24,17 @@ def bookmark(request):
 
     all_bookmark = None
     if request.method == 'POST':
-        bookmark = Bookmark(
-            bookmark_name=request.POST["bookmark_name"], bookmark_url=request.POST["bookmark_url"],
-            bookmark_desc=request.POST["bookmark_desc"]
+        Inquiry = Question(
+            question=request.POST["bookmark_name"], User_url=request.POST["bookmark_url"]
         )
-        bookmark.save()
+        Inquiry.save()
         result = {"email": email,
                   "bookmark_name": request.POST["bookmark_name"],
                   "bookmark_url": request.POST["bookmark_url"]}
 
         return render(request, 'bookmark.html', result)
     else:
-        all_bookmark = Bookmark.objects.all()
+        all_bookmark = Question.objects.all()
         result = {"email": email,
                   "all_bookmark": all_bookmark}
         return render(request, 'bookmark.html', result)
@@ -97,57 +96,68 @@ def user_registration(request):
             return render(request, 'index.html', {"login_id": email})
 
 def product(request):
-        search = request.POST.get("search")
 
+        search = request.POST.get("search")
         url = 'https://search.shopping.naver.com/search/all.nhn?origQuery=' + str(search) + '&pagingIndex=1&pagingSize=40&viewType=list&sort=price_asc&frm=NVSCTAB&query=' + str(search)
         page = requests.get(url)
         html = page.text
         soup = BeautifulSoup(html, "html.parser")
+        try:
+            name2 = list()  # 1번 data
 
-        name2 = list()  # 1번 data
+            for i in soup.findAll(attrs={'class': 'info'}):
+              title = i.next_element.next_element.get('title')
+              name2.append(title)
 
-        for i in soup.findAll(attrs={'class': 'info'}):
-            title = i.next_element.next_element.get('title')
-            name2.append(title)
-
-        name = list()
-        for i in range(0, 5):
-            name.append(name2[i])
+            name = list()
+            for i in range(0, 5):
+                name.append(name2[i])
 
 
-        price3 = soup.find_all(attrs={'class': 'num _price_reload'})
-        price = list()
-        for i in range(0, 5):
-            price.append(price3[i].text)
+            price3 = soup.find_all(attrs={'class': 'num _price_reload'})
+            price = list()
+            for i in range(0, 5):
+                price.append(price3[i].text)
 
-        image2 = list()  # 2번 data
-        for i in soup.findAll(attrs={'class': '_productLazyImg'}):
-            link = i.attrs['data-original']
-            image2.append(link)
+            image2 = list()  # 2번 data
+            for i in soup.findAll(attrs={'class': '_productLazyImg'}):
+                link = i.attrs['data-original']
+                image2.append(link)
 
-        image = list()
-        for i in range(0, 5):
-            image.append(image2[i])
+            image = list()
+            for i in range(0, 5):
+                image.append(image2[i])
 
-        place = list()
-        for i in soup.findAll(attrs={'class': 'mall_img'}):
-            if i.text == str(""):
-                place2 = i.next_element.get('alt')
-                place.append(place2)
-            else:
-                place3 = str(i.text)
-                place.append(place3)
+            place = list()
+            for i in soup.findAll(attrs={'class': 'mall_img'}):
+                if i.text == str(""):
+                    place2 = i.next_element.get('alt')
+                    place.append(place2)
+                else:
+                    place3 = str(i.text)
+                    place.append(place3)
 
-        product_list = soup.find_all('li', {'class': '_itemSection'})
-        product_list2 = product_list[0:5]
+            product_list = soup.find_all('li', {'class': '_itemSection'})
+            product_list2 = product_list[0:5]
 
-        link = list()
-        for i in product_list2:
-            link.append(i.find('div', {'class': 'info'}).find('a').attrs['href'])
+            link = list()
+            for i in product_list2:
+                link.append(i.find('div', {'class': 'info'}).find('a').attrs['href'])
 
-        result = [{'name' : name[i], 'price' : price[i], 'image' : image[i], 'place' : place[i], 'link' : link[i]} for i in range(5)]
+            result = [{'name' : name[i], 'price' : price[i], 'image' : image[i], 'place' : place[i], 'link' : link[i]} for i in range(5)]
+
+            for i in range(5):
+                productlog = Product.objects.create(search=request.POST["search"],
+                                           product_name=name[i], product_place=place[i],
+                                           product_price=price[i])
+
+                productlog.save()
+
+        except:
+            result = 'Error'
 
         return render(request, 'product.html', {'result' : result})
+
 
 
 

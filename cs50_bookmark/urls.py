@@ -7,7 +7,7 @@ from bookmark import views as bk_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls, name='admin'),
     url(r'^$', bk_views.index, name='index'),
-    url(r'^bookmark$', bk_views.bookmark, name='bookmark'),
+    url(r'^Inquiry$', bk_views.Inquiry, name='Inquiry'),
     url(r'^login$', bk_views.login, name='login'),
     url(r'^logout$', bk_views.logout, name='logout'),
     url(r'^logout_process', bk_views.logout_process, name='logout_process'),
