@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^logout_process', bk_views.logout_process, name='logout_process'),
     url(r'^login_check$', bk_views.login_check, name='login_check'),
     url(r'^user_registration$', bk_views.user_registration, name='user_registration'),
-    url(r'^product$', bk_views.product, name='product')
+    url(r'^product$', bk_views.product, name='product'
+        )
 ]
