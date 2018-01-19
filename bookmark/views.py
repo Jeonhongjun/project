@@ -25,7 +25,7 @@ def Inquiry(request):
     all_bookmark = None
     if request.method == 'POST':
         Inquiry = Question(
-            question=request.POST["bookmark_name"], User_url=request.POST["bookmark_url"]
+            question=request.POST["bookmark_name"], User_url=request.POST["bookmark_url"], email=request.session['email']
         )
         Inquiry.save()
         result = {"email": email,
@@ -92,10 +92,14 @@ def user_registration(request):
             new_user.last_name = lastname
             new_user.first_name = firstname
             new_user.save()
-            request.session['login_id'] = email
-            return render(request, 'index.html', {"login_id": email})
+            request.session['email'] = email
+            return render(request, 'index.html', {"email": email})
 
 def product(request):
+        try:
+            email = request.session['email']
+        except KeyError as e:
+            return render(request, 'login_form.html')
 
         search = request.POST.get("search")
         url = 'https://search.shopping.naver.com/search/all.nhn?origQuery=' + str(search) + '&pagingIndex=1&pagingSize=40&viewType=list&sort=price_asc&frm=NVSCTAB&query=' + str(search)
@@ -147,7 +151,8 @@ def product(request):
             result = [{'name' : name[i], 'price' : price[i], 'image' : image[i], 'place' : place[i], 'link' : link[i]} for i in range(5)]
 
             for i in range(5):
-                productlog = Product.objects.create(search=request.POST["search"],
+                productlog = Product.objects.create(email=request.session['email'],
+                                           search=request.POST["search"],
                                            product_name=name[i], product_place=place[i],
                                            product_price=price[i])
 
@@ -156,7 +161,7 @@ def product(request):
         except:
             result = 'Error'
 
-        return render(request, 'product.html', {'result' : result})
+        return render(request, 'product.html', {'result' : result, 'email' : email})
 
 
 
