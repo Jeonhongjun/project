@@ -4,6 +4,7 @@ from bookmark.models import Question
 import requests
 from bs4 import BeautifulSoup
 from bookmark.models import Product
+from bookmark.models import lowshop
 from django.contrib.auth.models import User
 
 import datetime
@@ -157,6 +158,9 @@ def product(request):
                                            product_price=price[i])
 
                 productlog.save()
+
+            lowlog = lowshop.objects.create(email=request.session['email'], lowest=place[1])
+            lowlog.save()
 
         except:
             result = 'Error'

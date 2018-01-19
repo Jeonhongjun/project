@@ -1,5 +1,5 @@
 from django.db import models
-
+import datetime
 
 class Question(models.Model):
     bookmark_id = models.AutoField(primary_key=True)
@@ -23,5 +23,15 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_price + "-" + self.product_place + "-" + self.product_name
+
+class lowshop(models.Model):
+    email = models.CharField(max_length=100, null=True)
+    lowest = models.CharField(max_length=100, null=True)
+    created_time = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return str(self.email) + "-" + self.lowest
+
 
 
